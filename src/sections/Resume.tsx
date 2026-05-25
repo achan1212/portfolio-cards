@@ -5,12 +5,12 @@ const experience = [
     period: "May 2022 – Present",
     location: "Ridgefield Park, NJ",
     bullets: [
-      "Decreased global page load times by 20% through code splitting, lazy loading, and CDN configuration, improving Core Web Vitals scores and user retention.",
-      "Engineered flagship reserve pages for S24, S23, Tablets, and Galaxy Notebooks that captured over 5,000 pre-release customer inquiries.",
-      "Revamped the Digital Service Request portal, successfully processing over 290,000 support tickets in 2024.",
-      "Developed modular B2B product page components that drove a 25% increase in user engagement.",
-      "Led front-end relaunch of the SamsungAds Blog, resulting in a 20% boost in lead generation.",
-      "Sole front-end developer for the Solve for Tomorrow national education contest, supporting thousands of student participants.",
+      "Cut global page load times by 20% through code splitting, lazy loading, and CDN optimization — directly improving Core Web Vitals scores and reducing bounce rate across high-traffic product pages.",
+      "Sole front-end engineer for Galaxy S24, S23, Tablets, and Notebook flagship reserve campaigns; pages captured 5,000+ pre-release inquiries feeding directly into the sales pipeline.",
+      "Rebuilt the Digital Service Request portal end-to-end, scaling it to process 290,000+ support tickets in 2024 with zero critical incidents.",
+      "Architected a modular B2B tier-pricing component system deployed across PDPs, product cards, and the compare surface, driving a 25% lift in user engagement.",
+      "Led front-end relaunch of the SamsungAds Blog with performance and SEO improvements that produced a 20% increase in qualified lead generation.",
+      "Served as the sole front-end engineer for Samsung's national Solve for Tomorrow STEM contest, owning all UI from wireframe review through production launch.",
     ],
   },
   {
@@ -19,8 +19,8 @@ const experience = [
     period: "June 2021 – February 2022",
     location: "New Brunswick, NJ",
     bullets: [
-      "Designed a logo communicating accessibility for historically marginalized communities.",
-      "Built a landing page and registration forms using WordPress and Sites by Rutgers, engaging 200+ students and volunteers.",
+      "Designed a brand identity and logo centered on accessibility and belonging for historically underserved communities.",
+      "Built a responsive landing page and registration system in WordPress, onboarding 200+ students and volunteers for community garden programming across New Brunswick.",
     ],
   },
   {
@@ -29,8 +29,8 @@ const experience = [
     period: "July 2018 – June 2021",
     location: "New Brunswick, NJ",
     bullets: [
-      "Led artistic direction for diverse educational games focused on nutrition and community initiatives.",
-      "Produced 70+ vibrant illustrations across AR-powered games, fostering learning and engagement for young audiences.",
+      "Led artistic direction across three Vuforia AR titles spanning nutrition education, campus history, and community programming — owning character design, animation, and UI illustration end-to-end.",
+      "Delivered 70+ production-ready illustrations and animated sprites integrated directly into shipped AR experiences for K-12 and university audiences.",
     ],
   },
 ];

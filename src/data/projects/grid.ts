@@ -11,7 +11,7 @@ export const grid: WorkExperience = {
       id: "arbor-trail",
       label: "Arbor Trail XR",
       description:
-        "Illustrated the complete flora and fauna asset library for an AR nature trail app — botanical plant studies, animated wildlife (deer, rabbit, frog, squirrel), and in-app UI elements used throughout the Audubon-inspired journal experience.",
+        "Designed and illustrated the full visual asset library for Arbor Trail, an Audubon Society-inspired AR nature journal. Owned the entire illustration pipeline: botanical plant studies, hand-animated wildlife sprites (deer, rabbit, frog, squirrel), and in-app UI elements. Assets had to read clearly at small sizes on mobile AR hardware, driving a clean, high-contrast illustration style that retained detail at any scale.",
       screenshots: [
         { src: "/GRIDimages/images/arbortrailcard.jpg", alt: "Arbor Trail app — table of contents UI", portrait: true },
         { src: "/GRIDimages/arbortrail/masonryGRID/images/floweringdogwood.png", alt: "Flowering dogwood botanical illustration", contain: true },
@@ -25,8 +25,7 @@ export const grid: WorkExperience = {
       id: "nutrition-game",
       label: "Nutrition Game",
       description:
-        "Created all character illustrations and animated sprites for Skelly's Search for Dairy — an educational nutrition game for kids. Part of a body of 70+ vibrant illustrations produced for Rutgers GRID Lab to enrich interactive learning experiences.",
-      stat: { value: "70+", label: "illustrations produced" },
+        "Illustrated and animated all character art for Skelly's Search for Dairy, a nutrition education game for elementary-age children. Part of a sustained three-year creative output of 70+ illustrations across multiple GRID Lab titles — spanning character design, expressive pose animation, and environment art that balanced the lab's educational research goals with a genuinely engaging player experience.",
       screenshots: [
         { src: "/GRIDimages/images/skellycard.jpg", alt: "Skelly's Search for Dairy — title screen and park scene" },
         { src: "/GRIDimages/nutritiongame/masonryGRID/images/skellysintro.gif", alt: "Skelly intro animation", contain: true },
@@ -40,7 +39,7 @@ export const grid: WorkExperience = {
       id: "voorhees-mall",
       label: "Voorhees Mall XR",
       description:
-        "Illustrated portrait characters for a Vuforia-based AR campus tour of Rutgers' Voorhees Mall, commissioned for the SCUP conference. Each character represents a building's department and guides players through campus history.",
+        "Designed a cast of portrait characters for a Vuforia-based AR campus history experience, commissioned for the SCUP (Society for College and University Planning) national conference. Each character communicates their academic department's identity at a glance — a character-design challenge balancing institutional brand with approachable, game-ready illustration. Presented live at conference to an audience of university planning professionals.",
       screenshots: [
         { src: "/GRIDimages/images/voorheescard.jpg", alt: "Voorhees Mall — Van Dyck Hall at Rutgers", portrait: true },
         { src: "/GRIDimages/voorheesmall/images/04.png", alt: "Amy — student advisor portrait character", contain: true },

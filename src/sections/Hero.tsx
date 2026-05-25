@@ -59,9 +59,10 @@ export default function Hero() {
               </span>
             </h1>
             <p className="hero-subtitle mt-6 text-lg text-neutral-300 max-w-xl">
-              I'm Allan — a UI developer at Samsung SDS America, building
-              high-performance web experiences with React, AEM, and a love for
-              thoughtful design.
+              I'm Allan — a UI developer at Samsung SDS America with 3+ years
+              shipping B2B commerce platforms, flagship product launches, and
+              national-scale portals to millions of users. I turn complex
+              requirements into fast, accessible, polished React experiences.
             </p>
             <div className="hero-cta mt-10 flex gap-4 pointer-events-auto">
               <a
