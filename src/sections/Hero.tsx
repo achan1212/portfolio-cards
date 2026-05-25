@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import HeroScene from "../components/canvas/HeroScene";
+import ErrorBoundary from "../components/ErrorBoundary";
 
 export default function Hero() {
   const container = useRef<HTMLElement>(null);
@@ -35,7 +36,9 @@ export default function Hero() {
       className="relative min-h-screen w-full overflow-hidden"
     >
       <div className={`absolute inset-0 ${canvasOnTop ? "z-20" : "z-0"}`}>
-        <HeroScene onSpreadChange={setDeckSpread} />
+        <ErrorBoundary>
+          <HeroScene onSpreadChange={setDeckSpread} />
+        </ErrorBoundary>
       </div>
 
       <div
