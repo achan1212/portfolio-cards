@@ -26,6 +26,7 @@ export const grid: WorkExperience = {
       label: "Nutrition Game",
       description:
         "Created all character illustrations and animated sprites for Skelly's Search for Dairy — an educational nutrition game for kids. Part of a body of 70+ vibrant illustrations produced for Rutgers GRID Lab to enrich interactive learning experiences.",
+      stat: { value: "70+", label: "illustrations produced" },
       screenshots: [
         { src: "/GRIDimages/images/skellycard.jpg", alt: "Skelly's Search for Dairy — title screen and park scene" },
         { src: "/GRIDimages/nutritiongame/masonryGRID/images/skellysintro.gif", alt: "Skelly intro animation", contain: true },

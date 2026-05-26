@@ -10,6 +10,7 @@ export type Feature = {
   label: string;
   description: string;
   screenshots: Screenshot[];
+  stat?: { value: string; label: string };
 };
 
 export type WorkExperience = {

@@ -24,6 +24,7 @@ export const samsung: WorkExperience = {
       label: "Tier Pricing",
       description:
         "Developed dynamic, modular B2B product page components surfacing bulk and volume pricing across PDPs, product cards, and the compare page. Enhanced user interaction tracking drove a 25% increase in user engagement and informed long-term content strategy.",
+      stat: { value: "25%", label: "increase in user engagement" },
       screenshots: [
         { src: "/samsung/ProductCardTierPricing.png", alt: "Galaxy Z Fold5 bulk pricing PDP" },
         { src: "/samsung/BusinessSolutionCard.png", alt: "Product cards with Business Account unlock" },
@@ -66,6 +67,7 @@ export const samsung: WorkExperience = {
       label: "Flagship Launches",
       description:
         "Delivered high-impact landing pages for major product launches including S24, S23, Tablets, and Galaxy Notebooks. Reserve pages captured over 5,000 pre-release customer inquiries, feeding lead data directly into sales and marketing analytics pipelines.",
+      stat: { value: "5,000+", label: "pre-release inquiries captured" },
       screenshots: [
         { src: "/samsung/Reserve2023.png", alt: "Galaxy Z Flip — reservation landing page" },
         { src: "/samsung/ReserveTimer.png", alt: "Reservation page with live countdown timer" },
@@ -76,6 +78,7 @@ export const samsung: WorkExperience = {
       label: "Solve for Tomorrow",
       description:
         "Sole front-end developer for Samsung's national Solve for Tomorrow education contest. Independently refined UI/UX designs, built responsive interfaces with ReactJS, jQuery, and Sass, and optimized API integration to support thousands of student participants.",
+      stat: { value: "1000s+", label: "student participants supported" },
       screenshots: [
         { src: "/samsung/SFTApplicationForm1.png", alt: "SFT application form — educator info" },
         { src: "/samsung/SFTAppForm2.png", alt: "SFT application form — concept overview" },

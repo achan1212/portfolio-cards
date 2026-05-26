@@ -32,21 +32,23 @@ const STACKED: Layout[] = [
 ];
 
 const SPREAD: Layout[] = [
-  { position: [-1.45, 0.00, 0.00], rotation: [0,  0.25, -0.08] },
-  { position: [-0.72, 0.16, 0.15], rotation: [0,  0.12, -0.04] },
-  { position: [ 0.00, 0.22, 0.30], rotation: [0,  0.00,  0.00] },
-  { position: [ 0.72, 0.16, 0.15], rotation: [0, -0.12,  0.04] },
-  { position: [ 1.45, 0.00, 0.00], rotation: [0, -0.25,  0.08] },
+  { position: [-2.0, 0.00, 0.00], rotation: [0,  0.25, -0.08] },
+  { position: [-1.0, 0.18, 0.18], rotation: [0,  0.12, -0.04] },
+  { position: [ 0.0, 0.26, 0.36], rotation: [0,  0.00,  0.00] },
+  { position: [ 1.0, 0.18, 0.18], rotation: [0, -0.12,  0.04] },
+  { position: [ 2.0, 0.00, 0.00], rotation: [0, -0.25,  0.08] },
 ];
 
 type AnimatedCardProps = {
   def: TarotCardDef;
   target: Layout;
   hovered: boolean;
+  spread: boolean;
   onPointerOver: () => void;
   onPointerOut: () => void;
   onPointerMove: (point: THREE.Vector3) => void;
   onClick: (e: ThreeEvent<MouseEvent>) => void;
+  onFlipActive: (active: boolean) => void;
 };
 
 const HOVER_LIFT_Y = 0.12;
@@ -57,10 +59,12 @@ function AnimatedCard({
   def,
   target,
   hovered,
+  spread,
   onPointerOver,
   onPointerOut,
   onPointerMove,
   onClick,
+  onFlipActive,
 }: AnimatedCardProps) {
   const groupRef = useRef<Group>(null);
   const tempVec = useMemo(() => new THREE.Vector3(), []);
@@ -73,14 +77,22 @@ function AnimatedCard({
 
   const flipValueRef = useRef(0);
   const flipCommittedRef = useRef(false);
+  const wasFlipActiveRef = useRef(false);
 
   useFrame((state, dt) => {
     const g = groupRef.current;
     if (!g) return;
     const a = 1 - Math.exp(-7 * dt);
 
-    // Release flip commitment when hover ends so the card eases back
-    if (!hovered) flipCommittedRef.current = false;
+    // When the deck collapses back to stacked, reset flip entirely
+    if (!spread) flipCommittedRef.current = false;
+
+    // Only clear commitment when hover ends AND the flip hasn't started yet —
+    // mid-flight flips keep going so the card completes its turn before the
+    // spread is allowed to close.
+    if (!hovered && flipValueRef.current < 0.05) {
+      flipCommittedRef.current = false;
+    }
 
     // On first hover frame, check if back is facing the camera and latch
     if (hovered && !flipCommittedRef.current) {
@@ -97,6 +109,14 @@ function AnimatedCard({
       flipCommittedRef.current ? Math.PI : 0,
       a,
     );
+
+    // Notify parent when flip transitions between active (mid-arc) and settled
+    const isFlipActive =
+      flipValueRef.current > 0.05 && flipValueRef.current < Math.PI - 0.05;
+    if (isFlipActive !== wasFlipActiveRef.current) {
+      wasFlipActiveRef.current = isFlipActive;
+      onFlipActive(isFlipActive);
+    }
 
     // Lift toward the camera in Z — sign flips when user orbits to the back
     const zDir = Math.sign(state.camera.position.z) || 1;
@@ -173,12 +193,15 @@ export default function TarotDeck({
   const downPosRef = useRef<{ x: number; y: number } | null>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [labelIndex, setLabelIndex] = useState<number | null>(null);
+  const [flipCount, setFlipCount] = useState(0);
   const lenis = useLenis();
 
   const tmpVec = useMemo(() => new THREE.Vector3(), []);
   const dirVec = useMemo(() => new THREE.Vector3(), []);
 
-  const spread = hoveredIndex !== null || pinned;
+  // Keep spread open while any card is mid-flip so the deck doesn't collapse
+  // when the pointer is temporarily lost as the card turns edge-on.
+  const spread = hoveredIndex !== null || pinned || flipCount > 0;
   const hovering = hoveredIndex !== null;
 
   useEffect(() => {
@@ -291,10 +314,14 @@ export default function TarotDeck({
               def={def}
               target={spread ? SPREAD[i] : STACKED[i]}
               hovered={hoveredIndex === i}
+              spread={spread}
               onPointerOver={() => handlePointerOver(i)}
               onPointerOut={() => handlePointerOut(i)}
               onPointerMove={handlePointerMove}
               onClick={(e) => handleClick(def, e)}
+              onFlipActive={(active) =>
+                setFlipCount((c) => c + (active ? 1 : -1))
+              }
             />
           ))}
           <group ref={labelAnchorRef}>
