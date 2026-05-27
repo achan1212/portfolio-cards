@@ -1,4 +1,5 @@
 import About from "../sections/About";
+import Artwork from "../sections/Artwork";
 import Contact from "../sections/Contact";
 import Hero from "../sections/Hero";
 import Projects from "../sections/Projects";
@@ -12,6 +13,7 @@ export default function Home() {
       <About />
       <Skills />
       <Projects />
+      <Artwork />
       <Resume />
       <Contact />
     </main>
