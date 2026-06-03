@@ -3,11 +3,11 @@ import { motion } from "framer-motion";
 import { navLinks } from "../../lib/navigation";
 
 interface NavbarProps {
-  lightMode: boolean;
+  isLight: boolean;
   onToggle: () => void;
 }
 
-export default function Navbar({ lightMode, onToggle }: NavbarProps) {
+export default function Navbar({ isLight, onToggle }: NavbarProps) {
   return (
     <motion.header
       initial={{ y: -32, opacity: 0 }}
@@ -36,10 +36,10 @@ export default function Navbar({ lightMode, onToggle }: NavbarProps) {
         </ul>
         <button
           onClick={onToggle}
-          aria-label="Toggle theme"
+          aria-label="Toggle light / dark"
           className="p-2 rounded-full border border-white/10 text-neutral-400 hover:text-white hover:border-white/20 transition-colors"
         >
-          {lightMode ? (
+          {isLight ? (
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
             </svg>
