@@ -5,17 +5,18 @@ import { useLenis } from "lenis/react";
 import * as THREE from "three";
 import type { Group } from "three";
 import TarotCard, { type TarotCardDef } from "./TarotCard";
+import { cardThemes, type ThemeId } from "../../lib/theme";
 
 const formatSection = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 const DRAG_THRESHOLD = 8;
 
 const CARDS: TarotCardDef[] = [
-  { title: "THE FOOL",      numeral: "0",     color: "#3d1f2e", symbol: "flower",   section: "about" },
-  { title: "THE MAGICIAN",  numeral: "I",     color: "#2d1b54", symbol: "infinity", section: "skills" },
-  { title: "THE STAR",      numeral: "XVII",  color: "#0f1729", symbol: "star",     section: "projects" },
-  { title: "THE MOON",      numeral: "XVIII", color: "#1e1b4b", symbol: "moon",     section: "resume" },
-  { title: "THE SUN",       numeral: "XIX",   color: "#3d2515", symbol: "sun",      section: "contact" },
+  { title: "THE FOOL",      numeral: "0",     symbol: "flower",   section: "about" },
+  { title: "THE MAGICIAN",  numeral: "I",     symbol: "infinity", section: "skills" },
+  { title: "THE STAR",      numeral: "XVII",  symbol: "star",     section: "projects" },
+  { title: "THE MOON",      numeral: "XVIII", symbol: "moon",     section: "resume" },
+  { title: "THE SUN",       numeral: "XIX",   symbol: "sun",      section: "contact" },
 ];
 
 type Layout = {
@@ -44,6 +45,8 @@ type AnimatedCardProps = {
   target: Layout;
   hovered: boolean;
   spread: boolean;
+  themeId: ThemeId;
+  cardColor: string;
   onPointerOver: () => void;
   onPointerOut: () => void;
   onPointerMove: (point: THREE.Vector3) => void;
@@ -60,6 +63,8 @@ function AnimatedCard({
   target,
   hovered,
   spread,
+  themeId,
+  cardColor,
   onPointerOver,
   onPointerOut,
   onPointerMove,
@@ -166,7 +171,7 @@ function AnimatedCard({
       onPointerMove={handlePointerMove}
       onClick={handleClick}
     >
-      <TarotCard def={def} hovered={hovered} />
+      <TarotCard def={def} hovered={hovered} themeId={themeId} cardColor={cardColor} />
     </group>
   );
 }
@@ -181,6 +186,10 @@ const IDLE_SWAY_AMPLITUDE = 0.4;
 const IDLE_SWAY_SPEED = 0.45;
 const CURSOR_LIGHT_INTENSITY = 2.6;
 
+function getThemeId(): ThemeId {
+  return (document.documentElement.getAttribute("data-theme") as ThemeId) ?? "dark";
+}
+
 export default function TarotDeck({
   pinned,
   onPinnedChange,
@@ -194,6 +203,7 @@ export default function TarotDeck({
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [labelIndex, setLabelIndex] = useState<number | null>(null);
   const [flipCount, setFlipCount] = useState(0);
+  const [themeId, setThemeId] = useState<ThemeId>(getThemeId);
   const lenis = useLenis();
 
   const tmpVec = useMemo(() => new THREE.Vector3(), []);
@@ -203,6 +213,14 @@ export default function TarotDeck({
   // when the pointer is temporarily lost as the card turns edge-on.
   const spread = hoveredIndex !== null || pinned || flipCount > 0;
   const hovering = hoveredIndex !== null;
+  const ct = cardThemes[themeId];
+
+  // Watch data-theme attribute — R3F uses its own reconciler so React context doesn't reach here
+  useEffect(() => {
+    const observer = new MutationObserver(() => setThemeId(getThemeId()));
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     onSpreadChange(spread);
@@ -315,6 +333,8 @@ export default function TarotDeck({
               target={spread ? SPREAD[i] : STACKED[i]}
               hovered={hoveredIndex === i}
               spread={spread}
+              themeId={themeId}
+              cardColor={ct.cardColors[i]}
               onPointerOver={() => handlePointerOver(i)}
               onPointerOut={() => handlePointerOut(i)}
               onPointerMove={handlePointerMove}
@@ -333,12 +353,15 @@ export default function TarotDeck({
                     transform: `translateY(${hovering ? 0 : 8}px)`,
                     transition: "opacity 0.22s ease, transform 0.22s ease",
                     pointerEvents: "none",
+                    borderColor: `${ct.symbol}66`,
+                    color: ct.symbol,
+                    boxShadow: `0 0 24px ${ct.symbol}40`,
                   }}
-                  className="flex items-center gap-2 whitespace-nowrap rounded-full border border-amber-300/40 bg-black/75 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.25em] text-amber-100 shadow-[0_0_24px_rgba(245,217,140,0.25)] backdrop-blur-md"
+                  className="flex items-center gap-2 whitespace-nowrap rounded-full border bg-black/75 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.25em] backdrop-blur-md"
                 >
-                  <span className="text-amber-300/70">✦</span>
+                  <span style={{ color: `${ct.symbol}b3` }}>✦</span>
                   {formatSection(CARDS[labelIndex].section)}
-                  <span className="text-amber-300/70">↓</span>
+                  <span style={{ color: `${ct.symbol}b3` }}>↓</span>
                 </div>
               </Html>
             )}
@@ -347,7 +370,7 @@ export default function TarotDeck({
       </Float>
       <pointLight
         ref={cursorLightRef}
-        color="#f5d98c"
+        color={ct.cursorLight}
         intensity={0}
         distance={1.6}
         decay={2}

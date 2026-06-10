@@ -1,37 +1,130 @@
 @import "tailwindcss";
 @import "lenis/dist/lenis.css";
 
+/* ─────────────────────────────────────────────
+   Base tokens (dark theme — default)
+───────────────────────────────────────────── */
 :root {
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color-scheme: dark;
-}
 
-/* ─── Theme tokens ─── */
-:root {
   --bg-page: #0a0a0a;
   --bg-card: #111111;
+  --color-base: #f5f5f5;
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  /* Skill-card hover glow */
+  --glow-primary:   rgba(167, 100, 255, 1);
+  --glow-secondary: rgba(217,  70, 239, 0.7);
 }
 
-html.light {
+/* ─────────────────────────────────────────────
+   Theme: Minimal Light
+───────────────────────────────────────────── */
+[data-theme="light"] {
+  color-scheme: light;
   --bg-page: #f5f5f5;
   --bg-card: #ffffff;
+  --color-base: #111111;
+  --glow-primary:   rgba(109,  40, 217, 1);
+  --glow-secondary: rgba(124,  58, 237, 0.7);
 }
 
+/* ─────────────────────────────────────────────
+   Theme: Midnight Blue
+───────────────────────────────────────────── */
+[data-theme="midnight"] {
+  color-scheme: dark;
+  --bg-page: #020812;
+  --bg-card: #050f24;
+
+  /* Accent palette → blue */
+  --color-violet-300: #93c5fd;
+  --color-violet-400: #60a5fa;
+  --color-violet-500: #3b82f6;
+  --color-violet-600: #2563eb;
+  --color-fuchsia-400: #818cf8;
+  --color-fuchsia-500: #6366f1;
+  --color-indigo-400:  #a78bfa;
+  --color-indigo-600:  #4338ca;
+
+  --glow-primary:   rgba( 96, 165, 250, 1);
+  --glow-secondary: rgba(129, 140, 248, 0.7);
+}
+
+/* ─────────────────────────────────────────────
+   Theme: Warm Ember
+───────────────────────────────────────────── */
+[data-theme="ember"] {
+  color-scheme: dark;
+  --bg-page: #0d0803;
+  --bg-card: #1a1108;
+
+  /* Accent palette → amber / orange */
+  --color-violet-300: #fcd34d;
+  --color-violet-400: #f59e0b;
+  --color-violet-500: #d97706;
+  --color-violet-600: #b45309;
+  --color-fuchsia-400: #f97316;
+  --color-fuchsia-500: #ea580c;
+  --color-indigo-400:  #ef4444;
+  --color-indigo-600:  #dc2626;
+
+  --glow-primary:   rgba(245, 158,  11, 1);
+  --glow-secondary: rgba(249, 115,  22, 0.7);
+}
+
+/* ─────────────────────────────────────────────
+   Theme: Terminal
+───────────────────────────────────────────── */
+[data-theme="terminal"] {
+  color-scheme: dark;
+  --bg-page: #030a03;
+  --bg-card: #061006;
+  --font-sans: ui-monospace, "Cascadia Code", "Source Code Pro", Menlo,
+               Consolas, "Courier New", monospace;
+
+  /* Accent palette → green */
+  --color-violet-300: #7ee787;
+  --color-violet-400: #3fb950;
+  --color-violet-500: #238636;
+  --color-violet-600: #196127;
+  --color-fuchsia-400: #39d353;
+  --color-fuchsia-500: #2ea043;
+  --color-indigo-400:  #56d364;
+  --color-indigo-600:  #196127;
+
+  --glow-primary:   rgba( 63, 185, 80, 1);
+  --glow-secondary: rgba( 46, 160, 67, 0.7);
+}
+
+/* Subtle green text-glow on headings for the terminal feel */
+[data-theme="terminal"] h1,
+[data-theme="terminal"] h2,
+[data-theme="terminal"] h3 {
+  text-shadow: 0 0 24px rgba(63, 185, 80, 0.18);
+}
+
+/* ─────────────────────────────────────────────
+   Base reset
+───────────────────────────────────────────── */
 html,
 body,
 #root {
   margin: 0;
   height: 100%;
   background: var(--bg-page);
-  color: #f5f5f5;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--color-base);
+  font-family: var(--font-sans);
   overflow-x: hidden;
 }
 
-/* ─── Smooth theme transition ─── */
+/* ─────────────────────────────────────────────
+   Smooth theme transitions
+───────────────────────────────────────────── */
 body,
 header,
 section,
@@ -40,47 +133,57 @@ main,
 .bg-page,
 .skill-card-inner,
 .skill-card-wrapper {
-  transition: background-color 0.35s ease, border-color 0.3s ease, color 0.25s ease;
+  transition: background-color 0.35s ease, border-color 0.3s ease,
+              color 0.25s ease;
 }
 
-/* ─── Theme utility classes ─── */
+/* ─────────────────────────────────────────────
+   Theme utility classes
+───────────────────────────────────────────── */
 .bg-page { background-color: var(--bg-page); }
 .bg-card  { background-color: var(--bg-card); }
 
-/* ─── Light mode overrides ─── */
-html.light body,
-html.light #root {
+/* ─────────────────────────────────────────────
+   Light-mode class overrides
+   (Tailwind utility classes that hard-code
+   white/transparent are flipped for light bg)
+───────────────────────────────────────────── */
+[data-theme="light"] body,
+[data-theme="light"] #root {
   color: #111111;
 }
 
 /* Text */
-html.light .text-white          { color: #111111 !important; }
-html.light .text-neutral-300    { color: #374151 !important; }
-html.light .text-neutral-400    { color: #4b5563 !important; }
-html.light .text-neutral-500    { color: #6b7280 !important; }
-html.light .text-violet-400     { color: #6d28d9 !important; }
-html.light .text-violet-300     { color: #6d28d9 !important; }
+[data-theme="light"] .text-white       { color: #111111 !important; }
+[data-theme="light"] .text-neutral-300 { color: #374151 !important; }
+[data-theme="light"] .text-neutral-400 { color: #4b5563 !important; }
+[data-theme="light"] .text-neutral-500 { color: #6b7280 !important; }
+[data-theme="light"] .text-violet-400  { color: #6d28d9 !important; }
+[data-theme="light"] .text-violet-300  { color: #6d28d9 !important; }
 
-/* Keep white text on filled violet buttons */
-html.light .bg-violet-500.text-white,
-html.light .bg-violet-400.text-white { color: #ffffff !important; }
+/* Keep white text on filled accent buttons */
+[data-theme="light"] .bg-violet-500.text-white,
+[data-theme="light"] .bg-violet-400.text-white { color: #ffffff !important; }
 
 /* Borders */
-html.light .border-white\/5     { border-color: rgba(0,0,0,0.06) !important; }
-html.light .border-white\/10    { border-color: rgba(0,0,0,0.1)  !important; }
-html.light .border-white\/20    { border-color: rgba(0,0,0,0.15) !important; }
-html.light .border-white\/40    { border-color: rgba(0,0,0,0.25) !important; }
+[data-theme="light"] .border-white\/5  { border-color: rgba(0, 0, 0, 0.06) !important; }
+[data-theme="light"] .border-white\/10 { border-color: rgba(0, 0, 0, 0.10) !important; }
+[data-theme="light"] .border-white\/20 { border-color: rgba(0, 0, 0, 0.15) !important; }
+[data-theme="light"] .border-white\/40 { border-color: rgba(0, 0, 0, 0.25) !important; }
 
 /* Backgrounds */
-html.light .bg-white\/5         { background-color: rgba(0,0,0,0.04) !important; }
-html.light .bg-white\/10        { background-color: rgba(0,0,0,0.08) !important; }
+[data-theme="light"] .bg-white\/5  { background-color: rgba(0, 0, 0, 0.04) !important; }
+[data-theme="light"] .bg-white\/10 { background-color: rgba(0, 0, 0, 0.08) !important; }
 
 /* Navbar */
-html.light header {
+[data-theme="light"] header {
   background: rgba(245, 245, 245, 0.88) !important;
   border-bottom-color: rgba(0, 0, 0, 0.08) !important;
 }
 
+/* ─────────────────────────────────────────────
+   Skill card hover glow
+───────────────────────────────────────────── */
 .skill-card-wrapper {
   position: relative;
   border-radius: 1rem;
@@ -95,8 +198,8 @@ html.light header {
   border-radius: inherit;
   background: radial-gradient(
     400px circle at var(--mx, -200px) var(--my, -200px),
-    rgba(167, 100, 255, 1),
-    rgba(217, 70, 239, 0.7) 35%,
+    var(--glow-primary),
+    var(--glow-secondary) 35%,
     transparent 60%
   );
   opacity: 0;
@@ -117,6 +220,6 @@ html.light header {
   height: 100%;
 }
 
-html.light .skill-card-wrapper {
+[data-theme="light"] .skill-card-wrapper {
   background: rgba(0, 0, 0, 0.12);
 }

@@ -2,13 +2,13 @@ import { useLayoutEffect, useMemo, useRef } from "react";
 import { useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import { cardThemes, type CardTheme, type ThemeId } from "../../lib/theme";
 
 export type TarotSymbol = "star" | "moon" | "sun" | "infinity" | "flower";
 
 export type TarotCardDef = {
   title: string;
   numeral: string;
-  color: string;
   symbol: TarotSymbol;
   section: string;
   frontImage?: string;
@@ -20,9 +20,6 @@ const CARD_HEIGHT = 1.85;
 const CARD_DEPTH = 0.015;
 const TEX_W = 512;
 const TEX_H = 896;
-const GOLD = "#d4a64a";
-const GOLD_BRIGHT = "#f5d98c";
-const BACK_COLOR = "#1a0d2e";
 
 function darken(hex: string, amount: number): string {
   const n = parseInt(hex.slice(1), 16);
@@ -38,11 +35,13 @@ function drawSymbol(
   cx: number,
   cy: number,
   size: number,
+  symbolColor: string,
+  backColor: string,
 ) {
   ctx.save();
   ctx.translate(cx, cy);
-  ctx.strokeStyle = GOLD_BRIGHT;
-  ctx.fillStyle = GOLD_BRIGHT;
+  ctx.strokeStyle = symbolColor;
+  ctx.fillStyle = symbolColor;
   ctx.lineWidth = 4;
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
@@ -67,7 +66,7 @@ function drawSymbol(
       ctx.beginPath();
       ctx.arc(0, 0, size, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = darken(BACK_COLOR, -0.2);
+      ctx.fillStyle = darken(backColor, -0.2);
       ctx.beginPath();
       ctx.arc(size * 0.35, 0, size * 0.95, 0, Math.PI * 2);
       ctx.fill();
@@ -114,7 +113,7 @@ function drawSymbol(
       }
       ctx.beginPath();
       ctx.arc(0, 0, size * 0.2, 0, Math.PI * 2);
-      ctx.fillStyle = GOLD;
+      ctx.fillStyle = symbolColor;
       ctx.fill();
       break;
     }
@@ -122,35 +121,35 @@ function drawSymbol(
   ctx.restore();
 }
 
-function makeFrontTexture(def: TarotCardDef): THREE.CanvasTexture {
+function makeFrontTexture(def: TarotCardDef, cardColor: string, ct: CardTheme): THREE.CanvasTexture {
   const canvas = document.createElement("canvas");
   canvas.width = TEX_W;
   canvas.height = TEX_H;
   const ctx = canvas.getContext("2d")!;
 
   const grad = ctx.createLinearGradient(0, 0, 0, TEX_H);
-  grad.addColorStop(0, darken(def.color, 0.35));
-  grad.addColorStop(0.5, def.color);
-  grad.addColorStop(1, darken(def.color, 0.45));
+  grad.addColorStop(0, darken(cardColor, 0.35));
+  grad.addColorStop(0.5, cardColor);
+  grad.addColorStop(1, darken(cardColor, 0.45));
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, TEX_W, TEX_H);
 
-  ctx.strokeStyle = GOLD;
+  ctx.strokeStyle = ct.frame;
   ctx.lineWidth = 6;
   ctx.strokeRect(22, 22, TEX_W - 44, TEX_H - 44);
   ctx.lineWidth = 2;
   ctx.strokeRect(38, 38, TEX_W - 76, TEX_H - 76);
 
-  ctx.fillStyle = GOLD_BRIGHT;
+  ctx.fillStyle = ct.symbol;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.font = "bold 72px Georgia, serif";
   ctx.fillText(def.numeral, TEX_W / 2, 120);
 
-  drawSymbol(ctx, def.symbol, TEX_W / 2, TEX_H / 2, 170);
+  drawSymbol(ctx, def.symbol, TEX_W / 2, TEX_H / 2, 170, ct.symbol, cardColor);
 
   ctx.font = "italic 40px Georgia, serif";
-  ctx.fillStyle = GOLD_BRIGHT;
+  ctx.fillStyle = ct.symbol;
   ctx.fillText(def.title, TEX_W / 2, TEX_H - 110);
 
   const tex = new THREE.CanvasTexture(canvas);
@@ -159,7 +158,7 @@ function makeFrontTexture(def: TarotCardDef): THREE.CanvasTexture {
   return tex;
 }
 
-function makeBackTexture(): THREE.CanvasTexture {
+function makeBackTexture(ct: CardTheme): THREE.CanvasTexture {
   const canvas = document.createElement("canvas");
   canvas.width = TEX_W;
   canvas.height = TEX_H;
@@ -173,12 +172,12 @@ function makeBackTexture(): THREE.CanvasTexture {
     TEX_H / 2,
     TEX_W,
   );
-  grad.addColorStop(0, "#3d1f5c");
-  grad.addColorStop(1, BACK_COLOR);
+  grad.addColorStop(0, ct.backHighlight);
+  grad.addColorStop(1, ct.back);
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, TEX_W, TEX_H);
 
-  ctx.strokeStyle = GOLD;
+  ctx.strokeStyle = ct.frame;
   ctx.lineWidth = 6;
   ctx.strokeRect(22, 22, TEX_W - 44, TEX_H - 44);
   ctx.lineWidth = 2;
@@ -186,8 +185,8 @@ function makeBackTexture(): THREE.CanvasTexture {
 
   const cx = TEX_W / 2;
   const cy = TEX_H / 2;
-  ctx.strokeStyle = GOLD_BRIGHT;
-  ctx.fillStyle = GOLD_BRIGHT;
+  ctx.strokeStyle = ct.symbol;
+  ctx.fillStyle = ct.symbol;
 
   for (let ring = 0; ring < 4; ring++) {
     const r = 60 + ring * 60;
@@ -211,7 +210,7 @@ function makeBackTexture(): THREE.CanvasTexture {
     ctx.stroke();
   }
 
-  drawSymbol(ctx, "sun", cx, cy, 36);
+  drawSymbol(ctx, "sun", cx, cy, 36, ct.symbol, ct.back);
 
   const tex = new THREE.CanvasTexture(canvas);
   tex.colorSpace = THREE.SRGBColorSpace;
@@ -225,9 +224,11 @@ type CardMeshProps = {
   frontMap: THREE.Texture;
   backMap: THREE.Texture;
   hovered: boolean;
+  frameColor: string;
+  symbolColor: string;
 };
 
-function CardMesh({ frontMap, backMap, hovered }: CardMeshProps) {
+function CardMesh({ frontMap, backMap, hovered, frameColor, symbolColor }: CardMeshProps) {
   const frontMatRef = useRef<THREE.MeshStandardMaterial>(null);
   const backMatRef = useRef<THREE.MeshStandardMaterial>(null);
 
@@ -251,17 +252,17 @@ function CardMesh({ frontMap, backMap, hovered }: CardMeshProps) {
   return (
     <mesh castShadow receiveShadow>
       <boxGeometry args={[CARD_WIDTH, CARD_HEIGHT, CARD_DEPTH]} />
-      <meshStandardMaterial attach="material-0" color={GOLD} roughness={0.5} metalness={0.7} />
-      <meshStandardMaterial attach="material-1" color={GOLD} roughness={0.5} metalness={0.7} />
-      <meshStandardMaterial attach="material-2" color={GOLD} roughness={0.5} metalness={0.7} />
-      <meshStandardMaterial attach="material-3" color={GOLD} roughness={0.5} metalness={0.7} />
+      <meshStandardMaterial attach="material-0" color={frameColor} roughness={0.5} metalness={0.7} />
+      <meshStandardMaterial attach="material-1" color={frameColor} roughness={0.5} metalness={0.7} />
+      <meshStandardMaterial attach="material-2" color={frameColor} roughness={0.5} metalness={0.7} />
+      <meshStandardMaterial attach="material-3" color={frameColor} roughness={0.5} metalness={0.7} />
       <meshStandardMaterial
         ref={frontMatRef}
         attach="material-4"
         map={frontMap}
         roughness={0.55}
         metalness={0.15}
-        emissive={GOLD_BRIGHT}
+        emissive={symbolColor}
         emissiveMap={frontMap}
         emissiveIntensity={0}
       />
@@ -271,7 +272,7 @@ function CardMesh({ frontMap, backMap, hovered }: CardMeshProps) {
         map={backMap}
         roughness={0.55}
         metalness={0.15}
-        emissive={GOLD_BRIGHT}
+        emissive={symbolColor}
         emissiveMap={backMap}
         emissiveIntensity={0}
       />
@@ -279,15 +280,45 @@ function CardMesh({ frontMap, backMap, hovered }: CardMeshProps) {
   );
 }
 
-function ProceduralCard({ def, hovered }: { def: TarotCardDef; hovered: boolean }) {
-  const frontMap = useMemo(() => makeFrontTexture(def), [def]);
-  const backMap = useMemo(() => makeBackTexture(), []);
-  return <CardMesh frontMap={frontMap} backMap={backMap} hovered={hovered} />;
+function ProceduralCard({
+  def,
+  hovered,
+  themeId,
+  cardColor,
+}: {
+  def: TarotCardDef;
+  hovered: boolean;
+  themeId: ThemeId;
+  cardColor: string;
+}) {
+  const ct = cardThemes[themeId];
+  const frontMap = useMemo(() => makeFrontTexture(def, cardColor, ct), [def, cardColor, themeId]);
+  const backMap = useMemo(() => makeBackTexture(ct), [themeId]);
+  return (
+    <CardMesh
+      frontMap={frontMap}
+      backMap={backMap}
+      hovered={hovered}
+      frameColor={ct.frame}
+      symbolColor={ct.symbol}
+    />
+  );
 }
 
-function ImageCard({ def, hovered }: { def: TarotCardDef; hovered: boolean }) {
-  const fallbackBack = useMemo(() => makeBackTexture(), []);
-  const fallbackFront = useMemo(() => makeFrontTexture(def), [def]);
+function ImageCard({
+  def,
+  hovered,
+  themeId,
+  cardColor,
+}: {
+  def: TarotCardDef;
+  hovered: boolean;
+  themeId: ThemeId;
+  cardColor: string;
+}) {
+  const ct = cardThemes[themeId];
+  const fallbackBack = useMemo(() => makeBackTexture(ct), [themeId]);
+  const fallbackFront = useMemo(() => makeFrontTexture(def, cardColor, ct), [def, cardColor, themeId]);
   const paths = [def.frontImage, def.backImage].filter(Boolean) as string[];
   const loaded = useTexture(paths);
   const arr = Array.isArray(loaded) ? loaded : [loaded];
@@ -297,19 +328,31 @@ function ImageCard({ def, hovered }: { def: TarotCardDef; hovered: boolean }) {
     if (frontMap instanceof THREE.Texture) frontMap.colorSpace = THREE.SRGBColorSpace;
     if (backMap instanceof THREE.Texture) backMap.colorSpace = THREE.SRGBColorSpace;
   }, [frontMap, backMap]);
-  return <CardMesh frontMap={frontMap} backMap={backMap} hovered={hovered} />;
+  return (
+    <CardMesh
+      frontMap={frontMap}
+      backMap={backMap}
+      hovered={hovered}
+      frameColor={ct.frame}
+      symbolColor={ct.symbol}
+    />
+  );
 }
 
 export default function TarotCard({
   def,
   hovered,
+  themeId,
+  cardColor,
 }: {
   def: TarotCardDef;
   hovered: boolean;
+  themeId: ThemeId;
+  cardColor: string;
 }) {
   return def.frontImage || def.backImage ? (
-    <ImageCard def={def} hovered={hovered} />
+    <ImageCard def={def} hovered={hovered} themeId={themeId} cardColor={cardColor} />
   ) : (
-    <ProceduralCard def={def} hovered={hovered} />
+    <ProceduralCard def={def} hovered={hovered} themeId={themeId} cardColor={cardColor} />
   );
 }

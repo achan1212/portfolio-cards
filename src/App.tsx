@@ -2,14 +2,19 @@ import { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ReactLenis } from "lenis/react";
 import Navbar from "./components/layout/Navbar";
+import ThemeSwitcher from "./components/ThemeSwitcher";
 import Home from "./pages/Home";
+import { type ThemeId } from "./lib/theme";
 
 export default function App() {
-  const [lightMode, setLightMode] = useState(false);
+  const [theme, setTheme] = useState<ThemeId>(
+    () => (localStorage.getItem("theme") as ThemeId) ?? "dark",
+  );
 
   useEffect(() => {
-    document.documentElement.classList.toggle("light", lightMode);
-  }, [lightMode]);
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
 
   return (
     <ReactLenis
@@ -21,7 +26,11 @@ export default function App() {
       }}
     >
       <BrowserRouter>
-        <Navbar lightMode={lightMode} onToggle={() => setLightMode((l) => !l)} />
+        <Navbar
+          isLight={theme === "light"}
+          onToggle={() => setTheme((t) => (t === "light" ? "dark" : "light"))}
+        />
+        <ThemeSwitcher theme={theme} onThemeChange={setTheme} />
         <Routes>
           <Route path="/" element={<Home />} />
         </Routes>
