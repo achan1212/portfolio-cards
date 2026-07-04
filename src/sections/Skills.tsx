@@ -1,28 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import type React from "react";
+import { skillGroupsByMode } from "../data/skills";
 
 // How many px of each stacked card peek above the next — enough to show the label
 const PEEK_HEIGHT = 52;
 
-const skillGroups = [
-  {
-    label: "Frontend",
-    skills: ["ReactJS", "JavaScript ES6+", "HTML5", "CSS3 / Sass", "jQuery", "Sly Slider"],
-  },
-  {
-    label: "CMS & Platforms",
-    skills: ["Adobe Experience Manager", "WordPress"],
-  },
-  {
-    label: "Analytics & Tracking",
-    skills: ["Google Tag Manager", "GA4", "Google Ads"],
-  },
-  {
-    label: "Auth & Security",
-    skills: ["JWT", "OAuth 2.0"],
-  },
-];
+// Mode wiring lands in a later phase; until then the section shows the technical set
+const skillGroups = skillGroupsByMode.technical;
 
 function SkillCard({ label, skills }: { label: string; skills: string[] }) {
   function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {

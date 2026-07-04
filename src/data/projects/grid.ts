@@ -5,6 +5,7 @@ export const grid: WorkExperience = {
   company: "Rutgers GRID Lab",
   role: "Illustrator",
   years: "July 2018 – June 2021",
+  discipline: "artistic",
   tags: ["Digital Illustration", "Character Animation", "Augmented Reality", "Vuforia", "Educational Tech"],
   features: [
     {

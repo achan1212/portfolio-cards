@@ -5,6 +5,7 @@ export const samsung: WorkExperience = {
   company: "Samsung SDS America",
   role: "UI Developer",
   years: "May 2022 – Present",
+  discipline: "technical",
   tags: ["ReactJS", "jQuery", "Sass", "AEM", "JavaScript ES6+", "GTM / GA4", "JWT / OAuth 2.0"],
   features: [
     {

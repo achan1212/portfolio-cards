@@ -1,3 +1,5 @@
+import type { ModeId } from "../../lib/mode";
+
 export type Screenshot = {
   src: string;
   alt: string;
@@ -18,6 +20,7 @@ export type WorkExperience = {
   company: string;
   role: string;
   years: string;
+  discipline: ModeId;
   tags: string[];
   features: Feature[];
 };
