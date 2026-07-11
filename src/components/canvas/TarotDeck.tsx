@@ -6,6 +6,7 @@ import * as THREE from "three";
 import type { Group } from "three";
 import TarotCard, { type TarotCardDef } from "./TarotCard";
 import { cardThemes, type ThemeId } from "../../lib/theme";
+import type { ModeId } from "../../lib/mode";
 
 const formatSection = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -190,6 +191,10 @@ function getThemeId(): ThemeId {
   return (document.documentElement.getAttribute("data-theme") as ThemeId) ?? "dark";
 }
 
+function getModeId(): ModeId {
+  return (document.documentElement.getAttribute("data-mode") as ModeId) ?? "technical";
+}
+
 export default function TarotDeck({
   pinned,
   onPinnedChange,
@@ -204,6 +209,7 @@ export default function TarotDeck({
   const [labelIndex, setLabelIndex] = useState<number | null>(null);
   const [flipCount, setFlipCount] = useState(0);
   const [themeId, setThemeId] = useState<ThemeId>(getThemeId);
+  const [modeId, setModeId] = useState<ModeId>(getModeId);
   const lenis = useLenis();
 
   const tmpVec = useMemo(() => new THREE.Vector3(), []);
@@ -215,10 +221,16 @@ export default function TarotDeck({
   const hovering = hoveredIndex !== null;
   const ct = cardThemes[themeId];
 
-  // Watch data-theme attribute — R3F uses its own reconciler so React context doesn't reach here
+  // Watch data-theme / data-mode — R3F uses its own reconciler so React context doesn't reach here
   useEffect(() => {
-    const observer = new MutationObserver(() => setThemeId(getThemeId()));
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    const observer = new MutationObserver(() => {
+      setThemeId(getThemeId());
+      setModeId(getModeId());
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["data-theme", "data-mode"],
+    });
     return () => observer.disconnect();
   }, []);
 
@@ -305,6 +317,13 @@ export default function TarotDeck({
     [],
   );
 
+  // THE STAR guides to the mode's centerpiece — artwork while in artistic mode
+  const sectionFor = useCallback(
+    (def: TarotCardDef) =>
+      modeId === "artistic" && def.section === "projects" ? "artwork" : def.section,
+    [modeId],
+  );
+
   const handleClick = useCallback(
     (def: TarotCardDef, e: ThreeEvent<MouseEvent>) => {
       const down = downPosRef.current;
@@ -314,12 +333,12 @@ export default function TarotDeck({
         if (Math.hypot(dx, dy) > DRAG_THRESHOLD) return;
       }
       if (spread) {
-        lenis?.scrollTo(`#${def.section}`, { offset: -64 });
+        lenis?.scrollTo(`#${sectionFor(def)}`, { offset: -64 });
         return;
       }
       onPinnedChange(true);
     },
-    [spread, onPinnedChange, lenis],
+    [spread, onPinnedChange, lenis, sectionFor],
   );
 
   return (
@@ -360,7 +379,7 @@ export default function TarotDeck({
                   className="flex items-center gap-2 whitespace-nowrap rounded-full border bg-black/75 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.25em] backdrop-blur-md"
                 >
                   <span style={{ color: `${ct.symbol}b3` }}>✦</span>
-                  {formatSection(CARDS[labelIndex].section)}
+                  {formatSection(sectionFor(CARDS[labelIndex]))}
                   <span style={{ color: `${ct.symbol}b3` }}>↓</span>
                 </div>
               </Html>

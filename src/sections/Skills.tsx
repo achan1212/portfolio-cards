@@ -2,12 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import type React from "react";
 import { skillGroupsByMode } from "../data/skills";
+import { modeCopy } from "../data/modeCopy";
+import type { ModeId } from "../lib/mode";
 
 // How many px of each stacked card peek above the next — enough to show the label
 const PEEK_HEIGHT = 52;
-
-// Mode wiring lands in a later phase; until then the section shows the technical set
-const skillGroups = skillGroupsByMode.technical;
 
 function SkillCard({ label, skills }: { label: string; skills: string[] }) {
   function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
@@ -36,7 +35,8 @@ function SkillCard({ label, skills }: { label: string; skills: string[] }) {
   );
 }
 
-export default function Skills() {
+export default function Skills({ mode }: { mode: ModeId }) {
+  const skillGroups = skillGroupsByMode[mode];
   const gridRef = useRef<HTMLUListElement>(null);
   const heightWrapperRef = useRef<HTMLDivElement>(null);
   const originalHeightRef = useRef<number | null>(null);
@@ -209,7 +209,7 @@ export default function Skills() {
             id="skills-heading"
             className="text-4xl md:text-5xl font-semibold tracking-tight text-white"
           >
-            Tools of the craft.
+            {modeCopy[mode].skills.heading}
           </h2>
           <button
             onClick={handleToggle}

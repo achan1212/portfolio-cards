@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { artworkPieces, type ArtworkPiece } from "../data/artwork";
+import type { ModeId } from "../lib/mode";
 
 // ─── Lightbox ────────────────────────────────────────────────────────────────
 
@@ -133,19 +134,36 @@ const aspectClass: Record<NonNullable<ArtworkPiece["aspect"]>, string> = {
 
 // ─── Section ─────────────────────────────────────────────────────────────────
 
-export default function Artwork() {
+type ArtworkProps = {
+  mode: ModeId;
+  onModeChange: (m: ModeId) => void;
+};
+
+export default function Artwork({ mode, onModeChange }: ArtworkProps) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const teaser = mode === "technical";
+  const pieces = teaser ? artworkPieces.slice(0, 3) : artworkPieces;
 
   return (
     <section id="artwork" className="py-32 px-6 border-t border-white/5">
       <div className="max-w-7xl mx-auto">
         <p className="text-sm uppercase tracking-[0.3em] text-violet-400 mb-4">Artwork</p>
-        <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-white mb-20">
-          Original illustrations.
-        </h2>
+        <div className="flex flex-wrap items-end justify-between gap-6 mb-20">
+          <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-white">
+            {teaser ? "Also: I draw." : "Original illustrations."}
+          </h2>
+          {teaser && (
+            <button
+              onClick={() => onModeChange("artistic")}
+              className="px-5 py-2.5 rounded-full border border-violet-500/40 bg-violet-500/10 text-sm text-violet-300 hover:bg-violet-500/20 transition-colors cursor-pointer"
+            >
+              See my artistic side →
+            </button>
+          )}
+        </div>
 
         <div className="columns-1 sm:columns-2 lg:columns-3 gap-4">
-          {artworkPieces.map((piece, i) => (
+          {pieces.map((piece, i) => (
             <div key={`${piece.title}-${i}`} className="break-inside-avoid mb-4">
               <button
                 onClick={() => setLightboxIndex(i)}
@@ -195,7 +213,7 @@ export default function Artwork() {
       <AnimatePresence>
         {lightboxIndex !== null && (
           <ArtworkLightbox
-            pieces={artworkPieces}
+            pieces={pieces}
             startIndex={lightboxIndex}
             onClose={() => setLightboxIndex(null)}
           />

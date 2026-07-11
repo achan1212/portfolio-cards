@@ -1,13 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
+import { AnimatePresence, motion } from "framer-motion";
 import HeroScene from "../components/canvas/HeroScene";
 import ErrorBoundary from "../components/ErrorBoundary";
+import { modeCopy } from "../data/modeCopy";
+import type { ModeId } from "../lib/mode";
 
-export default function Hero() {
+export default function Hero({ mode }: { mode: ModeId }) {
   const container = useRef<HTMLElement>(null);
   const [deckSpread, setDeckSpread] = useState(false);
   const [canvasOnTop, setCanvasOnTop] = useState(false);
+  const copy = modeCopy[mode].hero;
 
   useEffect(() => {
     if (deckSpread) {
@@ -51,25 +55,32 @@ export default function Hero() {
             <p className="hero-eyebrow text-sm uppercase tracking-[0.3em] text-violet-400 mb-4">
               Portfolio · 2026
             </p>
-            <h1 className="hero-title text-5xl md:text-7xl font-semibold tracking-tight text-white leading-[1.05]">
-              Building immersive
-              <br />
-              <span className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">
-                digital experiences.
-              </span>
-            </h1>
-            <p className="hero-subtitle mt-6 text-lg text-neutral-300 max-w-xl">
-              I'm Allan — a UI developer at Samsung SDS America with 3+ years
-              shipping B2B commerce platforms, flagship product launches, and
-              national-scale portals to millions of users. I turn complex
-              requirements into fast, accessible, polished React experiences.
-            </p>
-            <div className="hero-cta mt-10 flex gap-4 pointer-events-auto">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={mode}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.28, ease: "easeOut" }}
+              >
+                <h1 className="hero-title text-5xl md:text-7xl font-semibold tracking-tight text-white leading-[1.05]">
+                  {copy.titleLine1}
+                  <br />
+                  <span className="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">
+                    {copy.titleLine2}
+                  </span>
+                </h1>
+                <p className="hero-subtitle mt-6 text-lg text-neutral-300 max-w-xl">
+                  {copy.subtitle}
+                </p>
+              </motion.div>
+            </AnimatePresence>
+            <div className="hero-cta mt-10 flex flex-wrap items-center gap-4 pointer-events-auto">
               <a
-                href="#projects"
+                href={copy.primaryCta.href}
                 className="px-6 py-3 rounded-full bg-violet-500 hover:bg-violet-400 text-white text-sm font-medium transition-colors"
               >
-                View projects
+                {copy.primaryCta.label}
               </a>
               <a
                 href="#contact"

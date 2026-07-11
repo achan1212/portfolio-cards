@@ -1,5 +1,8 @@
+import type { ModeId } from "../lib/mode";
+
 const experience = [
   {
+    id: "samsung",
     company: "Samsung SDS America",
     role: "UI Developer — Sr. Staff Dotcom Operations",
     period: "May 2022 – Present",
@@ -14,6 +17,7 @@ const experience = [
     ],
   },
   {
+    id: "march2ru",
     company: "Rutgers University",
     role: "Website Designer — March2RUGardens",
     period: "June 2021 – February 2022",
@@ -24,6 +28,7 @@ const experience = [
     ],
   },
   {
+    id: "grid",
     company: "Rutgers GRID Lab",
     role: "Illustrator — Game Research Immersive Design",
     period: "July 2018 – June 2021",
@@ -45,7 +50,18 @@ const education = [
   },
 ];
 
-export default function Resume() {
+// Every entry stays visible in both modes — recruiters expect a complete
+// history — but the mode's discipline leads the timeline.
+const orderByMode: Record<ModeId, string[]> = {
+  technical: ["samsung", "march2ru", "grid"],
+  artistic: ["grid", "march2ru", "samsung"],
+};
+
+export default function Resume({ mode }: { mode: ModeId }) {
+  const ordered = orderByMode[mode]
+    .map((id) => experience.find((job) => job.id === id))
+    .filter((job): job is (typeof experience)[number] => job !== undefined);
+
   return (
     <section id="resume" className="py-32 px-6 border-t border-white/5">
       <div className="max-w-7xl mx-auto">
@@ -56,10 +72,10 @@ export default function Resume() {
 
         {/* Experience */}
         <div className="space-y-0">
-          {experience.map((job, i) => (
+          {ordered.map((job, i) => (
             <div key={job.company + job.role} className="relative pl-8 pb-16 last:pb-0">
               {/* Timeline spine */}
-              {i < experience.length - 1 && (
+              {i < ordered.length - 1 && (
                 <div className="absolute left-[7px] top-3 bottom-0 w-px bg-white/10" />
               )}
               {/* Timeline dot */}

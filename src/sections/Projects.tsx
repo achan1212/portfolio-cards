@@ -3,6 +3,8 @@ import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { workExperiences, type WorkExperience } from "../data/projects";
 import type { Screenshot } from "../data/projects/types";
+import { modeCopy } from "../data/modeCopy";
+import type { ModeId } from "../lib/mode";
 
 // ─── Lightbox ────────────────────────────────────────────────────────────────
 
@@ -267,16 +269,18 @@ function WorkCard({ company, role, years, tags, features }: WorkExperience) {
 
 // ─── Section ─────────────────────────────────────────────────────────────────
 
-export default function Projects() {
+export default function Projects({ mode }: { mode: ModeId }) {
+  const experiences = workExperiences.filter((w) => w.discipline === mode);
+
   return (
     <section id="projects" className="py-32 px-6 border-t border-white/5">
       <div className="max-w-7xl mx-auto">
         <p className="text-sm uppercase tracking-[0.3em] text-violet-400 mb-4">Projects</p>
         <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-white mb-20">
-          Selected work.
+          {modeCopy[mode].projects.heading}
         </h2>
         <div className="space-y-6">
-          {workExperiences.map((experience) => (
+          {experiences.map((experience) => (
             <WorkCard key={experience.id} {...experience} />
           ))}
         </div>

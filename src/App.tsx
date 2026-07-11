@@ -52,7 +52,7 @@ export default function App() {
         />
         <ThemeSwitcher theme={theme} onThemeChange={setTheme} />
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home mode={mode} onModeChange={setMode} />} />
         </Routes>
       </BrowserRouter>
     </ReactLenis>
