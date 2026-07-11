@@ -47,6 +47,8 @@ export default function App() {
         <Navbar
           isLight={theme === "light"}
           onToggle={() => setTheme((t) => (t === "light" ? "dark" : "light"))}
+          mode={mode}
+          onModeChange={setMode}
         />
         <ThemeSwitcher theme={theme} onThemeChange={setTheme} />
         <Routes>

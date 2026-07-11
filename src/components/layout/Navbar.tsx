@@ -1,13 +1,17 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { navLinks } from "../../lib/navigation";
+import ModeToggle from "../ModeToggle";
+import type { ModeId } from "../../lib/mode";
 
 interface NavbarProps {
   isLight: boolean;
   onToggle: () => void;
+  mode: ModeId;
+  onModeChange: (m: ModeId) => void;
 }
 
-export default function Navbar({ isLight, onToggle }: NavbarProps) {
+export default function Navbar({ isLight, onToggle, mode, onModeChange }: NavbarProps) {
   return (
     <motion.header
       initial={{ y: -32, opacity: 0 }}
@@ -34,6 +38,8 @@ export default function Navbar({ isLight, onToggle }: NavbarProps) {
             </li>
           ))}
         </ul>
+        <div className="flex items-center gap-3">
+        <ModeToggle mode={mode} onModeChange={onModeChange} />
         <button
           onClick={onToggle}
           aria-label="Toggle light / dark"
@@ -49,6 +55,7 @@ export default function Navbar({ isLight, onToggle }: NavbarProps) {
             </svg>
           )}
         </button>
+        </div>
       </nav>
     </motion.header>
   );
