@@ -15,8 +15,10 @@ Live repo: https://github.com/achan1212/portfolio-cards
 ## Key architecture decisions
 - Project data lives in `src/data/projects/` (typed TS files), not inline in components
 - `Feature` type has an optional `stat?: { value: string; label: string }` field — populate it when a feature has a measurable outcome to surface as a callout badge
-- `src/sections/Projects.tsx` is pure presentation — imports `workExperiences` array and maps `WorkCard`
-- Theme (light/dark) toggled by adding `html.light` class via `App.tsx` state; CSS variables in `src/index.css` handle the switch
+- `src/sections/Projects.tsx` is pure presentation — imports `workExperiences` array, filters by `discipline`, and maps `WorkCard`
+- **Theme system**: 5 presets (dark/light/midnight/ember/terminal) via `data-theme` attribute on `<html>`, driven by `App.tsx` state + `src/lib/theme.ts`; Tailwind v4 CSS variable overrides per `[data-theme]` block in `src/index.css` re-color every utility class; persisted to localStorage
+- **Mode system (Dev/Art)**: `mode: "technical" | "artistic"` in `App.tsx` (`src/lib/mode.ts`), mirrored to `data-mode` on `<html>`, localStorage, and a `?mode=art` URL param (init priority: URL → localStorage → technical). Content is tagged by `discipline`, not duplicated; per-mode copy lives in `src/data/modeCopy.ts`, per-mode skill groups in `src/data/skills.ts`. Sections receive `mode` as a prop and adapt (filter/reorder/copy-swap); `Home.tsx` flips section order so each mode's centerpiece leads
+- R3F components can't read DOM React context (separate reconciler) — `TarotDeck` observes `data-theme`/`data-mode` with a single MutationObserver instead
 - Canvas components in `src/components/canvas/` use refs + `useFrame` for all animation — no React state in the render loop
 
 ## Styling conventions
@@ -52,8 +54,14 @@ Live repo: https://github.com/achan1212/portfolio-cards
 - Timeline layout with violet dot spine for experience + education
 
 ### Theme
-- Light/dark toggle button in `Navbar` (sun/moon SVG)
-- `html.light` class flips `--bg-page` / `--bg-card` CSS vars; targeted overrides in `src/index.css` fix text/border colors in light mode
+- Quick light/dark toggle button in `Navbar` (sun/moon SVG); full 5-preset picker in the floating `ThemeSwitcher` (bottom-right)
+- `[data-theme]` blocks in `src/index.css` flip `--bg-page` / `--bg-card` / Tailwind color vars; tarot cards re-texture per theme via `cardThemes` in `src/lib/theme.ts`
+
+### Dual mode (Dev / Art)
+- `ModeToggle` segmented pill in the Navbar switches the whole site between technical and artistic personas
+- Hero copy crossfades; About paragraphs reorder; Skills swaps card sets (mode-keyed remount replays the GSAP deal-in); Projects filters by `discipline`; Artwork is a 3-piece teaser in Dev mode ("See my artistic side →" flips mode) and the full masonry in Art mode; Resume reorders mode-first; Contact copy swaps
+- Shareable: `?mode=art` in the URL wins over localStorage on load
+- Full plan/history: `docs/dual-mode-plan.md`
 
 ## What still needs to be done
 
