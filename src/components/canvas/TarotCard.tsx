@@ -1,8 +1,9 @@
-import { useLayoutEffect, useMemo, useRef } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import { useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { cardThemes, type CardTheme, type ThemeId } from "../../lib/theme";
+import { makeSurfaceMaps } from "./surfaceMaps";
 
 export type TarotSymbol = "star" | "moon" | "sun" | "infinity" | "flower";
 
@@ -220,6 +221,11 @@ function makeBackTexture(ct: CardTheme): THREE.CanvasTexture {
 
 const HOVER_EMISSIVE = 0.32;
 
+// Vector2s for normalScale — module constants so they aren't reallocated per
+// render. Faces stay subtle (printed stock); edges take more relief.
+const FACE_NORMAL_SCALE = new THREE.Vector2(0.35, 0.35);
+const EDGE_NORMAL_SCALE = new THREE.Vector2(0.8, 0.8);
+
 type CardMeshProps = {
   frontMap: THREE.Texture;
   backMap: THREE.Texture;
@@ -231,6 +237,23 @@ type CardMeshProps = {
 function CardMesh({ frontMap, backMap, hovered, frameColor, symbolColor }: CardMeshProps) {
   const frontMatRef = useRef<THREE.MeshStandardMaterial>(null);
   const backMatRef = useRef<THREE.MeshStandardMaterial>(null);
+
+  // Card-stock grain so the faces catch light unevenly instead of reading as
+  // flat printed panels. Front and back use different seeds so the two sides
+  // aren't mirror-identical under raking light.
+  const front = useMemo(() => makeSurfaceMaps("cardstock", 11), []);
+  const back = useMemo(() => makeSurfaceMaps("cardstock", 29), []);
+  // Coarser grain on the gilt edges reads as brushed metal rather than plastic
+  const edge = useMemo(() => makeSurfaceMaps("leather", 7), []);
+
+  useEffect(() => {
+    return () => {
+      for (const s of [front, back, edge]) {
+        s.normalMap.dispose();
+        s.roughnessMap.dispose();
+      }
+    };
+  }, [front, back, edge]);
 
   useFrame((_, dt) => {
     const target = hovered ? HOVER_EMISSIVE : 0;
@@ -252,16 +275,26 @@ function CardMesh({ frontMap, backMap, hovered, frameColor, symbolColor }: CardM
   return (
     <mesh castShadow receiveShadow>
       <boxGeometry args={[CARD_WIDTH, CARD_HEIGHT, CARD_DEPTH]} />
-      <meshStandardMaterial attach="material-0" color={frameColor} roughness={0.5} metalness={0.7} />
-      <meshStandardMaterial attach="material-1" color={frameColor} roughness={0.5} metalness={0.7} />
-      <meshStandardMaterial attach="material-2" color={frameColor} roughness={0.5} metalness={0.7} />
-      <meshStandardMaterial attach="material-3" color={frameColor} roughness={0.5} metalness={0.7} />
+      {[0, 1, 2, 3].map((i) => (
+        <meshStandardMaterial
+          key={i}
+          attach={`material-${i}`}
+          color={frameColor}
+          roughness={0.5}
+          metalness={0.7}
+          normalMap={edge.normalMap}
+          normalScale={EDGE_NORMAL_SCALE}
+          roughnessMap={edge.roughnessMap}
+        />
+      ))}
       <meshStandardMaterial
         ref={frontMatRef}
         attach="material-4"
         map={frontMap}
-        roughness={0.55}
         metalness={0.15}
+        normalMap={front.normalMap}
+        normalScale={FACE_NORMAL_SCALE}
+        roughnessMap={front.roughnessMap}
         emissive={symbolColor}
         emissiveMap={frontMap}
         emissiveIntensity={0}
@@ -270,8 +303,10 @@ function CardMesh({ frontMap, backMap, hovered, frameColor, symbolColor }: CardM
         ref={backMatRef}
         attach="material-5"
         map={backMap}
-        roughness={0.55}
         metalness={0.15}
+        normalMap={back.normalMap}
+        normalScale={FACE_NORMAL_SCALE}
+        roughnessMap={back.roughnessMap}
         emissive={symbolColor}
         emissiveMap={backMap}
         emissiveIntensity={0}
