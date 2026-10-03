@@ -13,7 +13,7 @@ const DRAG_THRESHOLD = 8;
 
 const CARDS: TarotCardDef[] = [
   { title: "THE FOOL",      numeral: "0",     symbol: "flower",   section: "about" },
-  { title: "THE MAGICIAN",  numeral: "I",     symbol: "infinity", section: "skills" },
+  { title: "THE MAGICIAN",  numeral: "I",     symbol: "infinity", section: "about"  },
   { title: "THE STAR",      numeral: "XVII",  symbol: "star",     section: "projects" },
   { title: "THE MOON",      numeral: "XVIII", symbol: "moon",     section: "resume" },
   { title: "THE SUN",       numeral: "XIX",   symbol: "sun",      section: "contact" },
@@ -24,12 +24,17 @@ type Layout = {
   rotation: [number, number, number];
 };
 
+// Squared-up deck: cards share one X/Y axis and differ only in Z so they read
+// as a single neat pile. Only the faintest rotation remains — a perfectly
+// uniform stack reads as one solid block rather than separate cards.
+const STACK_GAP = 0.02; // Z spacing between neighbouring cards
+
 const STACKED: Layout[] = [
-  { position: [-0.05, -0.07, 0.00], rotation: [0, 0, -0.03]  },
-  { position: [-0.03, -0.03, 0.08], rotation: [0, 0, -0.015] },
-  { position: [ 0.00,  0.00, 0.16], rotation: [0, 0,  0.00]  },
-  { position: [ 0.03,  0.03, 0.24], rotation: [0, 0,  0.015] },
-  { position: [ 0.05,  0.07, 0.32], rotation: [0, 0,  0.03]  },
+  { position: [0, 0, STACK_GAP * 0], rotation: [0, 0, -0.004] },
+  { position: [0, 0, STACK_GAP * 1], rotation: [0, 0,  0.003] },
+  { position: [0, 0, STACK_GAP * 2], rotation: [0, 0, -0.002] },
+  { position: [0, 0, STACK_GAP * 3], rotation: [0, 0,  0.004] },
+  { position: [0, 0, STACK_GAP * 4], rotation: [0, 0, -0.003] },
 ];
 
 const SPREAD: Layout[] = [
@@ -182,6 +187,13 @@ type TarotDeckProps = {
   onSpreadChange: (spread: boolean) => void;
 };
 
+// Fraction of the visible world width to park the idle deck right of centre.
+const IDLE_X_FRACTION = 0.26;
+// Below this the hero copy is still full-width (max-w-2xl at 672px plus
+// gutters), so there is no clear right-hand column to park the deck in and it
+// stays centred behind the text instead.
+const NARROW_BREAKPOINT = 1200;
+
 const IDLE_SWAY_AMPLITUDE = 0.4;
 const IDLE_SWAY_SPEED = 0.45;
 const CURSOR_LIGHT_INTENSITY = 2.6;
@@ -263,6 +275,23 @@ export default function TarotDeck({
           1 - Math.exp(-5 * dt),
         );
       }
+
+      // Idle, the deck parks on the right so it clears the hero copy on the
+      // left. Spread, it recentres so the five-card fan stays balanced in the
+      // viewport. Derived from the visible world width at the deck's depth
+      // rather than a fixed offset, so the gap holds across viewport sizes.
+      const cam = state.camera as THREE.PerspectiveCamera;
+      const viewH = 2 * Math.tan((cam.fov * Math.PI) / 180 / 2) * cam.position.z;
+      const viewW = viewH * (state.size.width / state.size.height);
+      // Narrow viewports have no free right-hand column, so the deck stays
+      // centred rather than being pushed half off-screen.
+      const idleX =
+        state.size.width < NARROW_BREAKPOINT ? 0 : viewW * IDLE_X_FRACTION;
+      g.position.x = THREE.MathUtils.lerp(
+        g.position.x,
+        spread ? 0 : idleX,
+        1 - Math.exp(-4 * dt),
+      );
     }
 
     const light = cursorLightRef.current;
