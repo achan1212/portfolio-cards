@@ -26,11 +26,32 @@
 ───────────────────────────────────────────── */
 [data-theme="light"] {
   color-scheme: light;
-  --bg-page: #f5f5f5;
-  --bg-card: #ffffff;
-  --color-base: #111111;
-  --glow-primary:   rgba(109,  40, 217, 1);
-  --glow-secondary: rgba(124,  58, 237, 0.7);
+
+  /* Botanical field-journal palette: warm pressed-paper ground, sepia ink,
+     sage and forest green accents in place of the dark theme's violet. */
+  --bg-page: #f2ede1;
+  --bg-card: #faf6ec;
+  --color-base: #2f3328;
+
+  /* Ink colours used by the paper/pen-stroke treatments below */
+  --ink-primary:  #3a3f32;  /* graphite body text */
+  --ink-muted:    #6b7159;  /* faded pencil */
+  --ink-sepia:    #8a7a5c;  /* handwritten annotation */
+  --rule-line:    rgba(122, 131, 102, 0.16);
+
+  /* Accent scale → green. These override the violet/fuchsia/indigo tokens
+     the components reference, the same way the Midnight theme remaps them. */
+  --color-violet-300: #6f7d53;
+  --color-violet-400: #55703f;
+  --color-violet-500: #4a6236;
+  --color-violet-600: #3d542d;
+  --color-fuchsia-400: #7d8c5a;
+  --color-fuchsia-500: #6b7d4c;
+  --color-indigo-400:  #52734f;
+  --color-indigo-600:  #3f5a3c;
+
+  --glow-primary:   rgba( 85, 112,  63, 0.85);
+  --glow-secondary: rgba(125, 140,  90, 0.55);
 }
 
 /* ─────────────────────────────────────────────
@@ -153,32 +174,85 @@ main,
   color: #111111;
 }
 
-/* Text */
-[data-theme="light"] .text-white       { color: #111111 !important; }
-[data-theme="light"] .text-neutral-300 { color: #374151 !important; }
-[data-theme="light"] .text-neutral-400 { color: #4b5563 !important; }
-[data-theme="light"] .text-neutral-500 { color: #6b7280 !important; }
-[data-theme="light"] .text-violet-400  { color: #6d28d9 !important; }
-[data-theme="light"] .text-violet-300  { color: #6d28d9 !important; }
+/* Paper ground: faint ruled lines plus a warm fibre wash, so the page reads
+   as a sketchbook leaf rather than flat white. Fixed attachment keeps the
+   rule spacing steady while the page scrolls. */
+[data-theme="light"] body,
+[data-theme="light"] #root {
+  background-color: var(--bg-page);
+  background-image:
+    /* horizontal ruling, like a notebook */
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 31px,
+      var(--rule-line) 31px,
+      var(--rule-line) 32px
+    ),
+    /* soft warm blotches = uneven paper stock */
+    radial-gradient(ellipse 60% 40% at 15% 12%, rgba(196, 184, 150, 0.16), transparent 70%),
+    radial-gradient(ellipse 50% 45% at 85% 70%, rgba(168, 176, 140, 0.13), transparent 70%);
+  background-attachment: fixed;
+}
 
-/* Keep white text on filled accent buttons */
+/* Text — graphite and sepia instead of neutral greys */
+[data-theme="light"] .text-white       { color: var(--ink-primary) !important; }
+[data-theme="light"] .text-neutral-300 { color: #4a5040 !important; }
+[data-theme="light"] .text-neutral-400 { color: #5c6350 !important; }
+[data-theme="light"] .text-neutral-500 { color: var(--ink-sepia) !important; }
+[data-theme="light"] .text-neutral-600 { color: #9a8e71 !important; }
+[data-theme="light"] .text-violet-400  { color: #55703f !important; }
+[data-theme="light"] .text-violet-300  { color: #55703f !important; }
+
+/* Section eyebrows read as pencilled field-notes labels */
+[data-theme="light"] .text-violet-400.uppercase {
+  color: var(--ink-sepia) !important;
+  font-style: italic;
+  letter-spacing: 0.22em !important;
+}
+
+/* Keep legible text on filled accent buttons */
 [data-theme="light"] .bg-violet-500.text-white,
-[data-theme="light"] .bg-violet-400.text-white { color: #ffffff !important; }
+[data-theme="light"] .bg-violet-400.text-white { color: #f7f4e9 !important; }
+[data-theme="light"] .bg-violet-500 { background-color: #4a6236 !important; }
+[data-theme="light"] .bg-violet-400:hover,
+[data-theme="light"] .hover\:bg-violet-400:hover { background-color: #55703f !important; }
 
-/* Borders */
-[data-theme="light"] .border-white\/5  { border-color: rgba(0, 0, 0, 0.06) !important; }
-[data-theme="light"] .border-white\/10 { border-color: rgba(0, 0, 0, 0.10) !important; }
-[data-theme="light"] .border-white\/20 { border-color: rgba(0, 0, 0, 0.15) !important; }
-[data-theme="light"] .border-white\/40 { border-color: rgba(0, 0, 0, 0.25) !important; }
+/* Borders — pen-stroke green-grey rather than plain black alpha */
+[data-theme="light"] .border-white\/5  { border-color: rgba(90, 100, 72, 0.14) !important; }
+[data-theme="light"] .border-white\/10 { border-color: rgba(90, 100, 72, 0.22) !important; }
+[data-theme="light"] .border-white\/20 { border-color: rgba(90, 100, 72, 0.32) !important; }
+[data-theme="light"] .border-white\/40 { border-color: rgba(90, 100, 72, 0.48) !important; }
 
-/* Backgrounds */
-[data-theme="light"] .bg-white\/5  { background-color: rgba(0, 0, 0, 0.04) !important; }
-[data-theme="light"] .bg-white\/10 { background-color: rgba(0, 0, 0, 0.08) !important; }
+/* Section dividers drawn as a light, slightly irregular pen stroke */
+[data-theme="light"] section.border-t {
+  border-top-color: transparent !important;
+  background-image: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(90, 100, 72, 0.30) 4%,
+    rgba(90, 100, 72, 0.30) 96%,
+    transparent 100%
+  );
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: top left;
+}
 
-/* Navbar */
+/* Backgrounds — translucent paper tint, not grey */
+[data-theme="light"] .bg-white\/5  { background-color: rgba(255, 252, 243, 0.62) !important; }
+[data-theme="light"] .bg-white\/10 { background-color: rgba(255, 252, 243, 0.85) !important; }
+
+/* Cards get a hand-inked edge + a hint of paper lift */
+[data-theme="light"] .rounded-xl.border,
+[data-theme="light"] .rounded-2xl.border {
+  box-shadow: 0 1px 0 rgba(90, 100, 72, 0.10), 0 6px 18px rgba(120, 112, 86, 0.08);
+}
+
+/* Navbar — tinted paper with a ruled underline */
 [data-theme="light"] header {
-  background: rgba(245, 245, 245, 0.88) !important;
-  border-bottom-color: rgba(0, 0, 0, 0.08) !important;
+  background: rgba(242, 237, 225, 0.90) !important;
+  border-bottom-color: rgba(90, 100, 72, 0.22) !important;
 }
 
 /* ─────────────────────────────────────────────
@@ -223,3 +297,104 @@ main,
 [data-theme="light"] .skill-card-wrapper {
   background: rgba(0, 0, 0, 0.12);
 }
+
+/* ─────────────────────────────────────────────
+   Field-journal gradients
+   Tailwind compiles from-/via-/to- utilities to
+   literal colours, so the theme tokens above
+   can't reach them — restate them here.
+───────────────────────────────────────────── */
+[data-theme="light"] .from-violet-400 { --tw-gradient-from: #55703f !important; }
+[data-theme="light"] .via-fuchsia-400 { --tw-gradient-via: #7d8c5a !important; }
+[data-theme="light"] .to-indigo-400   { --tw-gradient-to:  #3f5a3c !important; }
+
+/* Project-card halo: a soft herbal wash instead of the violet glow */
+[data-theme="light"] .from-violet-600\/50 { --tw-gradient-from: rgba(74,  98,  54, 0.30) !important; }
+[data-theme="light"] .via-fuchsia-500\/25 { --tw-gradient-via:  rgba(125, 140,  90, 0.18) !important; }
+[data-theme="light"] .to-indigo-600\/40   { --tw-gradient-to:   rgba(63,  90,  60, 0.26) !important; }
+
+/* ─────────────────────────────────────────────
+   Pen-stroke detailing (light theme only)
+   Hand-drawn SVG strokes, inlined as data URIs
+   so they stay crisp and need no extra requests.
+───────────────────────────────────────────── */
+
+/* Section headings get a sketched underline that wobbles like a drawn line */
+[data-theme="light"] section > div > h2 {
+  position: relative;
+  padding-bottom: 0.38em;
+}
+[data-theme="light"] section > div > h2::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: clamp(140px, 42%, 320px);
+  height: 7px;
+  background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 7' preserveAspectRatio='none'>\
+<path d='M1 4.2 C 46 1.4, 92 5.6, 138 3.4 S 232 1.2, 299 3.9' \
+fill='none' stroke='%235f7a43' stroke-width='1.5' stroke-linecap='round' opacity='0.75'/>\
+<path d='M8 6.2 C 60 4.6, 118 6.8, 176 5.2 S 256 4.4, 292 5.9' \
+fill='none' stroke='%238a7a5c' stroke-width='0.9' stroke-linecap='round' opacity='0.45'/>\
+</svg>");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  pointer-events: none;
+}
+
+/* Eyebrow labels get a small pressed-leaf sprig, like a field-guide marker */
+[data-theme="light"] section > div > p.uppercase {
+  position: relative;
+  padding-left: 22px;
+}
+[data-theme="light"] section > div > p.uppercase::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 15px;
+  height: 15px;
+  background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'>\
+<path d='M8 14.5 L8 4' stroke='%235f7a43' stroke-width='1.1' stroke-linecap='round' fill='none'/>\
+<path d='M8 6.4 C 5.2 5.4, 3.6 3.4, 3.4 1.6 C 5.6 2, 7.4 3.6, 8 6.4 Z' \
+fill='%236f8a4e' opacity='0.55'/>\
+<path d='M8 8.6 C 10.8 7.6, 12.4 5.6, 12.6 3.8 C 10.4 4.2, 8.6 5.8, 8 8.6 Z' \
+fill='%236f8a4e' opacity='0.4'/>\
+</svg>");
+  background-repeat: no-repeat;
+  background-size: contain;
+  pointer-events: none;
+}
+
+/* Cards sit on the page like taped-in specimens: a torn-paper edge tone
+   and a faint drawn rule along the top. */
+[data-theme="light"] .rounded-xl.border,
+[data-theme="light"] .rounded-2xl.border {
+  background-color: rgba(252, 249, 240, 0.72) !important;
+}
+
+/* Filled accent buttons read as ink stamps rather than flat UI chips */
+[data-theme="light"] .bg-violet-500 {
+  box-shadow: 0 1px 0 rgba(44, 58, 32, 0.28), 0 4px 12px rgba(74, 98, 54, 0.22);
+}
+
+/* Outline buttons get a hand-inked border */
+[data-theme="light"] .rounded-full.border {
+  border-color: rgba(90, 100, 72, 0.42) !important;
+}
+
+/* Empty artwork slots read as taped-in specimen placeholders: a dashed
+   pencil boundary so they stay visible against the cream paper. */
+[data-theme="light"] #artwork .group {
+  background-color: rgba(250, 246, 234, 0.55) !important;
+  border: 1px dashed rgba(107, 113, 89, 0.42) !important;
+  box-shadow: none !important;
+}
+[data-theme="light"] #artwork .group:hover {
+  border-color: rgba(85, 112, 63, 0.65) !important;
+}
+/* Placeholder glyph + label need to lift off the paper */
+[data-theme="light"] #artwork .text-white\/20 { color: rgba(107, 113, 89, 0.55) !important; }

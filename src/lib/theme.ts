@@ -11,7 +11,7 @@ export const themes: {
   { id: "midnight", label: "Midnight Blue", description: "Cool navy",      bg: "#020812", accent: "#60a5fa" },
   { id: "ember",    label: "Warm Ember",    description: "Editorial",      bg: "#0d0803", accent: "#f59e0b" },
   { id: "terminal", label: "Terminal",      description: "Raw code",       bg: "#030a03", accent: "#3fb950" },
-  { id: "light",    label: "Minimal Light", description: "Clean & bright", bg: "#f5f5f5", accent: "#7c3aed" },
+  { id: "light",    label: "Field Journal", description: "Botanical",     bg: "#f2ede1", accent: "#55703f" },
 ];
 
 export type CardTheme = {
@@ -56,12 +56,14 @@ export const cardThemes: Record<ThemeId, CardTheme> = {
     cursorLight:   "#4ade80",
     cardColors: ["#0d1f0d", "#0a180a", "#081408", "#091609", "#0b1d0b"],
   },
+  // Botanical field journal: pressed-plant greens on warm paper, with sepia
+  // ink for the linework instead of the other themes' metallic frame.
   light: {
-    frame:         "#7c3aed",
-    symbol:        "#a78bfa",
-    back:          "#2e1065",
-    backHighlight: "#5b21b6",
-    cursorLight:   "#7c3aed",
-    cardColors: ["#5b21b6", "#4c1d95", "#3730a3", "#312e81", "#6d28d9"],
+    frame:         "#7a6a4a",
+    symbol:        "#4a6236",
+    back:          "#e8e0cc",
+    backHighlight: "#f4efe0",
+    cursorLight:   "#8fa66b",
+    cardColors: ["#dfe3cd", "#e6e4cf", "#d8e0c8", "#e9e3d2", "#dde5d1"],
   },
 };
