@@ -198,8 +198,18 @@ main,
 [data-theme="light"] .text-white       { color: var(--ink-primary) !important; }
 [data-theme="light"] .text-neutral-300 { color: #4a5040 !important; }
 [data-theme="light"] .text-neutral-400 { color: #5c6350 !important; }
-[data-theme="light"] .text-neutral-500 { color: var(--ink-sepia) !important; }
-[data-theme="light"] .text-neutral-600 { color: #9a8e71 !important; }
+[data-theme="light"] .text-neutral-500 { color: #6e654f !important; }
+[data-theme="light"] .text-neutral-600 { color: #6e654f !important; }
+
+/* Tailwind's translucent white utilities were never remapped for light mode:
+   on dark they are dimmed white, but over pale paper they wash out entirely.
+   Each maps to a graphite at the alpha that preserves the intended hierarchy
+   while clearing 4.5:1 against the page. */
+[data-theme="light"] .text-white\/70 { color: rgba(58, 63, 50, 0.92) !important; }
+[data-theme="light"] .text-white\/60 { color: rgba(58, 63, 50, 0.88) !important; }
+[data-theme="light"] .text-white\/40 { color: rgba(58, 63, 50, 0.78) !important; }
+[data-theme="light"] .text-white\/30 { color: rgba(58, 63, 50, 0.72) !important; }
+[data-theme="light"] .text-white\/20 { color: rgba(58, 63, 50, 0.65) !important; }
 [data-theme="light"] .text-violet-400  { color: #55703f !important; }
 [data-theme="light"] .text-violet-300  { color: #55703f !important; }
 
@@ -395,5 +405,7 @@ fill='%236f8a4e' opacity='0.4'/>\
 [data-theme="light"] #artwork .group:hover {
   border-color: rgba(85, 112, 63, 0.65) !important;
 }
-/* Placeholder glyph + label need to lift off the paper */
-[data-theme="light"] #artwork .text-white\/20 { color: rgba(107, 113, 89, 0.55) !important; }
+/* Placeholder glyph + label need to lift off the paper. This is more
+   specific than the generic .text-white/20 rule above, so it has to carry a
+   readable value itself rather than inheriting one. */
+[data-theme="light"] #artwork .text-white\/20 { color: rgba(58, 63, 50, 0.78) !important; }
