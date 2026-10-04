@@ -1,5 +1,9 @@
 export type ThemeId = "dark" | "light" | "midnight" | "ember" | "terminal";
 
+// Only Dark and Field Journal are offered in the switcher. Midnight/Ember/
+// Terminal stay fully defined below (cardThemes, CSS) so nothing breaks for
+// a visitor whose localStorage still has one of those IDs saved — they're
+// just no longer reachable as a new choice.
 export const themes: {
   id: ThemeId;
   label: string;
@@ -7,11 +11,8 @@ export const themes: {
   bg: string;
   accent: string;
 }[] = [
-  { id: "dark",     label: "Dark",          description: "Default",        bg: "#0a0a0a", accent: "#a78bfa" },
-  { id: "midnight", label: "Midnight Blue", description: "Cool navy",      bg: "#020812", accent: "#60a5fa" },
-  { id: "ember",    label: "Warm Ember",    description: "Editorial",      bg: "#0d0803", accent: "#f59e0b" },
-  { id: "terminal", label: "Terminal",      description: "Raw code",       bg: "#030a03", accent: "#3fb950" },
-  { id: "light",    label: "Field Journal", description: "Botanical",     bg: "#f2ede1", accent: "#55703f" },
+  { id: "dark",  label: "Dark",          description: "Default",   bg: "#0a0a0a", accent: "#a78bfa" },
+  { id: "light", label: "Field Journal", description: "Botanical", bg: "#f2ede1", accent: "#55703f" },
 ];
 
 export type CardTheme = {
@@ -59,11 +60,11 @@ export const cardThemes: Record<ThemeId, CardTheme> = {
   // Botanical field journal: pressed-plant greens on warm paper, with sepia
   // ink for the linework instead of the other themes' metallic frame.
   light: {
-    frame:         "#7a6a4a",
-    symbol:        "#4a6236",
-    back:          "#e8e0cc",
-    backHighlight: "#f4efe0",
-    cursorLight:   "#8fa66b",
-    cardColors: ["#dfe3cd", "#e6e4cf", "#d8e0c8", "#e9e3d2", "#dde5d1"],
+    frame:         "#8a7752",
+    symbol:        "#3f5730",
+    back:          "#e0d7bf",
+    backHighlight: "#efe8d5",
+    cursorLight:   "#9db377",
+    cardColors: ["#d6d9bd", "#dedbc2", "#cfd8ba", "#e0d9c5", "#d4dcc3"],
   },
 };

@@ -174,24 +174,24 @@ main,
   color: #111111;
 }
 
-/* Paper ground: faint ruled lines plus a warm fibre wash, so the page reads
-   as a sketchbook leaf rather than flat white. Fixed attachment keeps the
-   rule spacing steady while the page scrolls. */
+/* Aged paper ground. No ruling — a fine fibre weave with soft mottled
+   toning and faint foxing, like good handmade sketchbook stock.
+
+   Both the grain AND the toning are baked into one seamless 256px tile
+   rather than composed from stacked CSS gradients. A large multi-gradient
+   background (or an inline feTurbulence filter) has to be re-rasterised
+   whenever the page composites, which measurably stalls painting — it
+   reliably wedged headless screenshot capture, and costs real users frame
+   time for no visual gain over a tiling bitmap. */
 [data-theme="light"] body,
 [data-theme="light"] #root {
   background-color: var(--bg-page);
   background-image:
-    /* horizontal ruling, like a notebook */
-    repeating-linear-gradient(
-      to bottom,
-      transparent 0,
-      transparent 31px,
-      var(--rule-line) 31px,
-      var(--rule-line) 32px
-    ),
-    /* soft warm blotches = uneven paper stock */
-    radial-gradient(ellipse 60% 40% at 15% 12%, rgba(196, 184, 150, 0.16), transparent 70%),
-    radial-gradient(ellipse 50% 45% at 85% 70%, rgba(168, 176, 140, 0.13), transparent 70%);
+    url("/paper-grain.png"),
+    /* single soft vignette so page edges read darker, like a handled book */
+    radial-gradient(ellipse 90% 80% at 50% 40%, transparent 58%, rgba(90, 76, 50, 0.085) 100%);
+  background-repeat: repeat, no-repeat;
+  background-size: 256px 256px, cover;
   background-attachment: fixed;
 }
 
@@ -249,7 +249,7 @@ main,
   box-shadow: 0 1px 0 rgba(90, 100, 72, 0.10), 0 6px 18px rgba(120, 112, 86, 0.08);
 }
 
-/* Navbar — tinted paper with a ruled underline */
+/* Navbar — tinted paper with an inked underline */
 [data-theme="light"] header {
   background: rgba(242, 237, 225, 0.90) !important;
   border-bottom-color: rgba(90, 100, 72, 0.22) !important;
