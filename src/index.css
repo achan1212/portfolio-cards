@@ -174,9 +174,11 @@ main,
   color: #111111;
 }
 
-/* Paper ground: an even fibre weave, nothing more. No ruling, and
-   deliberately no foxing spots or low-frequency mottling — those read as
-   mould stains rather than age.
+/* Paper ground: a pronounced fibre weave — clumped tooth, fine speckle and
+   a laid-paper cross-hatch. No ruling, and deliberately no foxing spots or
+   low-frequency mottling: anything low-frequency or colour-varying reads as
+   mould stains at page scale, so every feature here is high-frequency and
+   a single neutral tone.
 
    The weave is a pre-baked seamless 256px tile rather than CSS gradients or
    an inline SVG feTurbulence filter. Both of those have to be re-rasterised
