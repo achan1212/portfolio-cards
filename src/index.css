@@ -29,14 +29,14 @@
 
   /* Botanical field-journal palette: warm pressed-paper ground, sepia ink,
      sage and forest green accents in place of the dark theme's violet. */
-  --bg-page: #f2ede1;
-  --bg-card: #faf6ec;
+  --bg-page: #f7f5f0;
+  --bg-card: #fcfbf7;
   --color-base: #2f3328;
 
   /* Ink colours used by the paper/pen-stroke treatments below */
   --ink-primary:  #3a3f32;  /* graphite body text */
   --ink-muted:    #6b7159;  /* faded pencil */
-  --ink-sepia:    #8a7a5c;  /* handwritten annotation */
+  --ink-sepia:    #847961;  /* handwritten annotation */
   --rule-line:    rgba(122, 131, 102, 0.16);
 
   /* Accent scale → green. These override the violet/fuchsia/indigo tokens
@@ -174,23 +174,17 @@ main,
   color: #111111;
 }
 
-/* Paper ground: cold-press watercolour stock — an even field of soft
-   rounded nodules.
+/* Paper ground: fine-grain (hot-press) watercolour stock — a tight
+   canvas-like weave of fine warp and weft threads.
 
-   The tile stores lit RELIEF, not flat speckle: each bump carries a paired
-   highlight and shadow derived from the height field's gradient, which is
-   what makes it read as a physical dimpled surface. Nodule centres sit on a
-   jittered grid (pure random clumps into visible streaks) and the light is
-   near top-down (a 45-degree light bakes in a diagonal grain).
+   The tile stores lit RELIEF, not flat speckle: thread crossings carry a
+   paired highlight and shadow derived from the height field's gradient,
+   which is what makes it read as woven cloth. Warp and weft are weighted
+   equally and the light is balanced between both axes — favouring either
+   direction turns the weave into fine horizontal ruling.
 
    No ruling, no foxing, no low-frequency mottling: anything low-frequency or
-   colour-varying reads as mould stains at page scale.
-
-   The weave is a pre-baked seamless 256px tile rather than CSS gradients or
-   an inline SVG feTurbulence filter. Both of those have to be re-rasterised
-   whenever the page composites, which measurably stalls painting (it
-   reliably wedged headless screenshot capture) and costs real users frame
-   time for no visual gain over a tiling bitmap. */
+   colour-varying reads as mould stains at page scale. */
 [data-theme="light"] body,
 [data-theme="light"] #root {
   background-color: var(--bg-page);
@@ -245,18 +239,18 @@ main,
 }
 
 /* Backgrounds — translucent paper tint, not grey */
-[data-theme="light"] .bg-white\/5  { background-color: rgba(255, 252, 243, 0.62) !important; }
-[data-theme="light"] .bg-white\/10 { background-color: rgba(255, 252, 243, 0.85) !important; }
+[data-theme="light"] .bg-white\/5  { background-color: rgba(255, 255, 253, 0.62) !important; }
+[data-theme="light"] .bg-white\/10 { background-color: rgba(255, 255, 253, 0.85) !important; }
 
 /* Cards get a hand-inked edge + a hint of paper lift */
 [data-theme="light"] .rounded-xl.border,
 [data-theme="light"] .rounded-2xl.border {
-  box-shadow: 0 1px 0 rgba(90, 100, 72, 0.10), 0 6px 18px rgba(120, 112, 86, 0.08);
+  box-shadow: 0 1px 0 rgba(90, 100, 72, 0.10), 0 6px 18px rgba(104, 104, 92, 0.08);
 }
 
 /* Navbar — tinted paper with an inked underline */
 [data-theme="light"] header {
-  background: rgba(242, 237, 225, 0.90) !important;
+  background: rgba(247, 245, 240, 0.90) !important;
   border-bottom-color: rgba(90, 100, 72, 0.22) !important;
 }
 
@@ -378,7 +372,7 @@ fill='%236f8a4e' opacity='0.4'/>\
    and a faint drawn rule along the top. */
 [data-theme="light"] .rounded-xl.border,
 [data-theme="light"] .rounded-2xl.border {
-  background-color: rgba(252, 249, 240, 0.72) !important;
+  background-color: rgba(253, 252, 249, 0.72) !important;
 }
 
 /* Filled accent buttons read as ink stamps rather than flat UI chips */
@@ -394,7 +388,7 @@ fill='%236f8a4e' opacity='0.4'/>\
 /* Empty artwork slots read as taped-in specimen placeholders: a dashed
    pencil boundary so they stay visible against the cream paper. */
 [data-theme="light"] #artwork .group {
-  background-color: rgba(250, 246, 234, 0.55) !important;
+  background-color: rgba(252, 251, 247, 0.55) !important;
   border: 1px dashed rgba(107, 113, 89, 0.42) !important;
   box-shadow: none !important;
 }
