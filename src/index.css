@@ -174,24 +174,21 @@ main,
   color: #111111;
 }
 
-/* Aged paper ground. No ruling — a fine fibre weave with soft mottled
-   toning and faint foxing, like good handmade sketchbook stock.
+/* Paper ground: an even fibre weave, nothing more. No ruling, and
+   deliberately no foxing spots or low-frequency mottling — those read as
+   mould stains rather than age.
 
-   Both the grain AND the toning are baked into one seamless 256px tile
-   rather than composed from stacked CSS gradients. A large multi-gradient
-   background (or an inline feTurbulence filter) has to be re-rasterised
-   whenever the page composites, which measurably stalls painting — it
-   reliably wedged headless screenshot capture, and costs real users frame
+   The weave is a pre-baked seamless 256px tile rather than CSS gradients or
+   an inline SVG feTurbulence filter. Both of those have to be re-rasterised
+   whenever the page composites, which measurably stalls painting (it
+   reliably wedged headless screenshot capture) and costs real users frame
    time for no visual gain over a tiling bitmap. */
 [data-theme="light"] body,
 [data-theme="light"] #root {
   background-color: var(--bg-page);
-  background-image:
-    url("/paper-grain.png"),
-    /* single soft vignette so page edges read darker, like a handled book */
-    radial-gradient(ellipse 90% 80% at 50% 40%, transparent 58%, rgba(90, 76, 50, 0.085) 100%);
-  background-repeat: repeat, no-repeat;
-  background-size: 256px 256px, cover;
+  background-image: url("/paper-grain.png");
+  background-repeat: repeat;
+  background-size: 256px 256px;
   background-attachment: fixed;
 }
 
