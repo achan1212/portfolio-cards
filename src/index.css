@@ -174,11 +174,17 @@ main,
   color: #111111;
 }
 
-/* Paper ground: a pronounced fibre weave — clumped tooth, fine speckle and
-   a laid-paper cross-hatch. No ruling, and deliberately no foxing spots or
-   low-frequency mottling: anything low-frequency or colour-varying reads as
-   mould stains at page scale, so every feature here is high-frequency and
-   a single neutral tone.
+/* Paper ground: cold-press watercolour stock — an even field of soft
+   rounded nodules.
+
+   The tile stores lit RELIEF, not flat speckle: each bump carries a paired
+   highlight and shadow derived from the height field's gradient, which is
+   what makes it read as a physical dimpled surface. Nodule centres sit on a
+   jittered grid (pure random clumps into visible streaks) and the light is
+   near top-down (a 45-degree light bakes in a diagonal grain).
+
+   No ruling, no foxing, no low-frequency mottling: anything low-frequency or
+   colour-varying reads as mould stains at page scale.
 
    The weave is a pre-baked seamless 256px tile rather than CSS gradients or
    an inline SVG feTurbulence filter. Both of those have to be re-rasterised
