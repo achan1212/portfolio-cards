@@ -11,8 +11,8 @@
   -moz-osx-font-smoothing: grayscale;
   color-scheme: dark;
 
-  --bg-page: #0a0a0a;
-  --bg-card: #111111;
+  --bg-page: #0a0a0c;   /* a touch of navy for the constellation field */
+  --bg-card: #111114;
   --color-base: #f5f5f5;
   --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 
@@ -141,6 +141,27 @@ body,
   color: var(--color-base);
   font-family: var(--font-sans);
   overflow-x: hidden;
+}
+
+/* ─────────────────────────────────────────────
+   Dark theme: constellation field
+   Gold stars joined by constellation lines over
+   scattered dots, on a deep navy-black ground.
+
+   Pre-baked seamless PNG for the same reason as
+   the Field Journal paper tile: large multi-layer
+   CSS backgrounds are re-rasterised on every
+   composite and measurably stall painting.
+───────────────────────────────────────────── */
+[data-theme="dark"] body,
+[data-theme="dark"] #root,
+:root:not([data-theme]) body,
+:root:not([data-theme]) #root {
+  background-color: var(--bg-page);
+  background-image: url("/constellations.png");
+  background-repeat: repeat;
+  background-size: 512px 512px;
+  background-attachment: fixed;
 }
 
 /* ─────────────────────────────────────────────
