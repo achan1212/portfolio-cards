@@ -145,8 +145,12 @@ body,
 
 /* ─────────────────────────────────────────────
    Dark theme: constellation field
-   Gold stars joined by constellation lines over
-   scattered dots, on a deep navy-black ground.
+   Real constellations — all 12 zodiacs plus Orion,
+   Ursa Major, Cassiopeia, Cygnus and Lyra — drawn
+   from catalogue star positions and official line
+   figures. Star size and opacity track true
+   apparent magnitude, so Vega and Rigel read
+   brighter than their neighbours.
 
    Pre-baked seamless PNG for the same reason as
    the Field Journal paper tile: large multi-layer
@@ -160,7 +164,7 @@ body,
   background-color: var(--bg-page);
   background-image: url("/constellations.png");
   background-repeat: repeat;
-  background-size: 512px 512px;
+  background-size: 1024px 1024px;
   background-attachment: fixed;
 }
 
